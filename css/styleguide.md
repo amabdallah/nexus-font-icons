@@ -1,11 +1,8 @@
 # Vlasterx Font Icons
-
-[vxIcons GitHub repo](https://github.com/Vlasterx/vxFontIcons)
-
 This collection of scripts enables end-user to create font-icons from SVG graphics.
-
 It is build on top of *node.js* and multiple *gulp* processes. 
 
+[vxIcons GitHub repo](https://github.com/Vlasterx/vxFontIcons)
 
 ## How to install?
 
@@ -22,6 +19,7 @@ You are now all set to use this collection.
 
 ## How to use it?
 In order to use this collection, you first need to do following steps:
+
 1. Copy your SVG's to *icons16* folder
 2. In your shell run *gulp* command
 
@@ -31,7 +29,7 @@ Gulp process will do the following
 - It will create styleGuide for your icons by using KSS node and will place it in *styleGuide* folder
 
 ## File Revving
-These font building pack usess font revving, which means that it will add different font version fow each build. Apache will be able to read and refresh fonts every time they are rebuilt, so keep in mind that .htaccess file ;)
+These font building pack usess font revving, which means that it will add different font version for each build. Apache will be able to read and refresh fonts every time they are rebuilt, so keep in mind that .htaccess file.
 
 ## Author
 Vladimir Jovanović
