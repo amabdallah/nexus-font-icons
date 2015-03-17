@@ -1,7 +1,7 @@
 {
-  "name": "blank-project",
-  "version": "1.0.0",
-  "description": "Blank project skeleton",
+  "name": "vxFontIcons",
+  "version": "2.0.0",
+  "description": "Vlasterx Font Icons",
   "dependencies": {},
   "devDependencies": {
     "gulp": "latest",
@@ -31,6 +31,6 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://vlasterx@bitbucket.org/dizajnninja/nexus-blank-project.git"
+      "url": "https://github.com/Vlasterx/vxFontIcons.git"
   }
 }
