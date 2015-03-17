@@ -1,0 +1,65 @@
+// Include this file in your main SCSS file, so that you can extend icon names
+%icon {
+    font-family: "<%= fontName %>";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    // speak: none; // only necessary if not using the private unicode range (firstGlyph option)
+    text-decoration: none;
+    text-transform: none;
+}
+
+@function icon-char($filename) {
+    $char: "";
+    <% _.each(glyphs, function(glyph) { %>
+        @if $filename == <%= glyph.fileName %> {
+            $char: "\<%= glyph.codePoint %>";
+        }<% }); %>
+    @return $char;
+}
+
+@mixin icon($filename, $insert: before) {
+    &:#{$insert} {
+        @extend %icon;
+        content: icon-char($filename);
+    }
+}
+
+
+/* 
+Icons
+
+Icons are autmatically generated from SVG graphics inside `./project/icons` folder. SVG graphics should be made on canvas which has height of `512px` and where gridline is set every 32px, with 4 subdivisions. There is an example Adobe Illustrator file in `./project/icons/test.ai`
+
+When you create icons, in order for them to be pixel perfect in size of `16px`, you must align curves to main gridlines. If you plan to make icons for some other pixel-perfect size, you must recalculate grid and canvas size.
+
+All graphics in SVG must follow these rules
+- only vectors are included, all raster graphics are discarded
+- only flat surfaces are included. All strokes must be converted to fills, use `Object -> Expand` command.
+- only one color is accepted. If you plan to make hollow objects, use `Pathfinder -> Exclude` command.
+
+####All generated icons####
+
+<% _.each(glyphs, function(glyph) { %><i class="icon icon-<%= glyph.fileName %>" alt=".icon-<%= glyph.fileName %>" title=".icon-<%= glyph.fileName %>"></i> <% }); %>
+
+Styleguide Icons
+*/
+
+
+<% _.each(glyphs, function(glyph) { %>
+/* 
+<%= glyph.fileName %>
+
+Markup:
+<i class="icon icon-<%= glyph.fileName %>"></i>
+
+Styleguide Icons.<%= glyph.fileName %> 
+*/
+
+.icon-<%= glyph.fileName %> {
+    @include icon(<%= glyph.fileName %>); 
+}
+<% }); %>

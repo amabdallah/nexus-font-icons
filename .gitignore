@@ -1,6 +1,5 @@
 .sass-cache/*
 node_modules/*
-styleGuide/*
-fonts/*
-css/*
-!css/styleguide.md
+project/styleGuide/*
+public/*
+!public/readme.md

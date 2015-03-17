@@ -1,0 +1,1 @@
+# Public folder, all files are generated from project folder #

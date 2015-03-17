@@ -1,15 +1,16 @@
-     Vlasterx                                             
+     Vlasterx                                                                                          
      _|_|_|_|                      _|                
      _|        _|_|    _|_|_|    _|_|_|_|            
      _|_|_|  _|    _|  _|    _|    _|                
      _|      _|    _|  _|    _|    _|                
-     _|        _|_|    _|    _|      _|_|            
+     _|        _|_|    _|    _|      _|_| 
 
      _|_|_|                                          
        _|      _|_|_|    _|_|    _|_|_|      _|_|_|  
        _|    _|        _|    _|  _|    _|  _|_|      
        _|    _|        _|    _|  _|    _|      _|_|  
-     _|_|_|    _|_|_|    _|_|    _|    _|  _|_|_|                                         
+     _|_|_|    _|_|_|    _|_|    _|    _|  _|_|_|    
+
 
 This collection of scripts enables end-user to create font-icons from SVG graphics.
 It is build on top of **node.js** and multiple **gulp** processes. 
