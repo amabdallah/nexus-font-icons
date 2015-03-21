@@ -1,7 +1,7 @@
 {
-  "name": "vxFontIcons",
+  "name": "nexus-font-icons",
   "version": "2.0.0",
-  "description": "Vlasterx Font Icons",
+  "description": "Nexus Font Icons",
   "dependencies": {},
   "devDependencies": {
     "gulp": "latest",
@@ -31,6 +31,6 @@
   },
   "repository": {
     "type": "git",
-      "url": "https://github.com/Vlasterx/vxFontIcons.git"
+      "url": "https://github.com/Vlasterx/nexus-font-icons.git"
   }
 }
