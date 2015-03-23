@@ -46,8 +46,7 @@ var paths = {
     styleGuide: {
         template: basePaths.project + 'styleGuide-template/',
         final   : basePaths.public + 'styleGuide/'
-    },
-
+    }
 };
 var appFiles = {
     iconCss         : paths.fonts.project + fontName + '/icons-glyphs.css',
