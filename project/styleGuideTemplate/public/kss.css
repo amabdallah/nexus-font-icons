@@ -6,14 +6,14 @@
 }
 
 .kss-style a {
-    color: #0645ad;
+    color: #ff333a;
     text-decoration: none;
     transition-property: color;
     transition-duration: .5s
 }
 
 .kss-style a:visited {
-    color: #0645ad
+    color: #ff333a
 }
 
 .kss-style a:hover,
@@ -53,27 +53,27 @@
 }
 
 .kss-style h1 {
-    font-size: 40px
-}
-
-.kss-style h2 {
-    font-size: 36px
-}
-
-.kss-style h3 {
     font-size: 34px
 }
 
-.kss-style h4 {
-    font-size: 32px
-}
-
-.kss-style h5 {
+.kss-style h2 {
     font-size: 30px
 }
 
+.kss-style h3 {
+    font-size: 26px
+}
+
+.kss-style h4 {
+    font-size: 24px
+}
+
+.kss-style h5 {
+    font-size: 22px
+}
+
 .kss-style h6 {
-    font-size: 28px
+    font-size: 20px
 }
 
 .kss-style blockquote {
@@ -102,9 +102,26 @@
     font-size: 1em;
 }
 
+
+.kss-style code {
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    padding: 0 5px;
+}
+
+
+.kss-style pre code {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+}
 .kss-style pre {
     border: 1px solid #ccc;
+    background-color: #f5f5f5;
     padding: 5px;
+}
+.kss-markup pre {
+    background-color: transparent;
 }
 
 .prettyprint code {
@@ -169,9 +186,24 @@
 
 .kss-style table {
     border-collapse: collapse;
-    border-spacing: 0
+    border-spacing: 0;
+    border: 1px solid #CCC;
 }
 
+.kss-style table thead tr {
+    background-color: #CCC;
+}
+
+.kss-style table tbody tr {
+    background-color: #FFF;
+}
+
+.kss-style table tbody tr:nth-child(even) {
+    background-color: #EEE;
+} 
+.kss-style table td, .kss-style table th {
+    padding: 5px 10px;
+}
 .kss-style td {
     vertical-align: top
 }
@@ -231,12 +263,6 @@
     #kss-node {
         padding: 0;
         background: #eee;
-        background: -webkit-linear-gradient(left, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 / 10px 1px repeat-y, -webkit-linear-gradient(left, #eee, #eee 20%, #fff 20%) 0 0 / 100% 1px;
-        background: -webkit-gradient(linear, left top, right top, color-stop(0, #eee), color-stop(50%, #e5e5e5), color-stop(100%, #d7d7d7)) 20% 0 / 10px 1px repeat-y, -webkit-gradient(linear, left top, right top, color-stop(0, #eee), color-stop(20%, #eee), color-stop(20%, #fff)) 0 0 / 100% 1px;
-        background: -webkit-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 / 10px 1px repeat-y, -webkit-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 / 100% 1px;
-        background: -o-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 / 10px 1px repeat-y, -o-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 / 100% 1px;
-        background: -ms-linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 / 10px 1px repeat-y, -ms-linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 / 100% 1px;
-        background: linear-gradient(to right, #eee, #e5e5e5 50%, #d7d7d7 100%) 20% 0 / 10px 1px repeat-y, linear-gradient(to right, #eee, #eee 20%, #fff 20%) 0 0 / 100% 1px
     }
     #kss-node .kss-main,
     #kss-node .kss-sidebar {
@@ -248,7 +274,8 @@
 
 #kss-node .kss-main {
     width: 100%;
-    margin: 0 auto
+    margin: 0 auto;
+    background-color: #fcfcfc;
 }
 
 @media screen and (min-width: 769px) {
