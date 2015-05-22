@@ -42,7 +42,10 @@ Gulp process will do the following
 ## File Revving
 This font building pack usess font revving, which means that it will add different font version for each build. Apache will be able to read and refresh fonts every time they are rebuilt without user needing to reload a page or empty browser cache, so keep in mind that `.htaccess` file.
 
+File revving is turned off by default. If you want to use this feature, open gulp.js and change 
+`var fileRevving` from `false` to `true`
 
+ 
 ## Custom font name
 If you want to change font name, you need to change few lines of code.
 
