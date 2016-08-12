@@ -1,19 +1,11 @@
+![Nexus font icons](http://i.imgur.com/ygx9EnC.png)
 
-    888~~                      d8         888                                  
-    888___  e88~-_  888-~88e _d88__       888  e88~~\  e88~-_  888-~88e  d88~\ 
-    888    d888   i 888  888  888         888 d888    d888   i 888  888 C888   
-    888    8888   | 888  888  888         888 8888    8888   | 888  888  Y88b  
-    888    Y888   ' 888  888  888         888 Y888    Y888   ' 888  888   888D 
-    888     "88_-~  888  888  "88_/       888  "88__/  "88_-~  888  888 \_88P  
-
-_* Part of [Nexus Framework](https://github.com/Vlasterx/nexus-framework)_
+_Part of [Nexus Framework](https://github.com/Vlasterx/nexus-framework)_
                                                                                                                    
-                                                                                     
-
-So, you want to make pixel icons for your web site, but don’t want to use generic icons that everyone else is using and you don’t know where to start? **You are in the right spot!**
-
+                                                                                   
 
 # Nexus Font Icons
+So, you want to make pixel icons for your web site, but don’t want to use generic icons that everyone else is using and you don’t know where to start? **You are in the right spot!**
 
 I am going to explain step by step basics of the whole design process and implementation of your new custom icons to your web site. Tutorial will cover these areas:
 
@@ -206,6 +198,7 @@ This font building pack can use font revving, which means that it will add diffe
 If you are using some other server, be sure to keep file revving disabled.
 
 This setting is located in "gulpfile.js"
+
 ![File revving](http://i.imgur.com/VC8sYa6.png)
 
 ### Inlcuding fonts in your web site
