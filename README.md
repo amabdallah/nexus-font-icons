@@ -78,7 +78,7 @@ We can now design icons! :) In this prepared example, you will see only test pat
 
 Each line has a width of 32px, which will translate to 1px in 16px icon. Don't be limited by straight lines, you can use curves as well, but in that case use line stroke that is same width as grid. In this case also 32px.
 
-##### How Can We Use "Flaws" In Ntialiasing For Our Advantage?
+##### How Can We Use "Flaws" In Antialiasing For Our Advantage?
 Simple - we can use thinner lines as well, but the effect is quite different. Line that is 50% thinner than grid width will produce effect of 50% transparency in its place. That is nice side effect of antialiasing which we can use for increased creativity, some interesting patterns and simulated transparency.
 
 ![Line widths and final effect](http://i.imgur.com/4b7xLyw.png)
