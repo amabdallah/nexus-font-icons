@@ -177,6 +177,15 @@ Open up Cmder, go to nexus-icons folder and type these commands:
     
 Congratulations, you are now ready to make some web font icons!
 
+When ever you change your SVG's, just open command prompt, CD to main folder of this repository and type in 
+
+    gulp
+    
+That's it.    
+
+![Gulp](http://i.imgur.com/EmJAqH1.png)
+
+
 ### Publishing Your Icons As Web Fonts
 Nexus-icons are split in two main folders - Project and Public.
 
