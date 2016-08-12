@@ -35,6 +35,7 @@ Another important factor is screen density. At the time when I am writing this t
 
 #### Real Life Example
 In the image below, you can see how good and bad icons look in their real size, magnified 4x from screenshot and in real life on regular monitor.
+
 ![Example of good and bad icons](http://i.imgur.com/eKmA9cp.png)
 
 There will always be some minor antialiasing on the edges when vector objects are shown on the screen, but we want to bring that down to a minimum. 
@@ -157,6 +158,7 @@ When you have installed Source Tree, you need to clone nexus-font-icons to folde
 In Source Tree click on Clone / New icon fill up Source and Destination paths like on this image.
 
 ![Setting up repository in SourceTree](http://i.imgur.com/nj3rUT9.png)
+
 Destination path is where you have installed your web server.
 
 Click on *clone* and you are finished with this step.
