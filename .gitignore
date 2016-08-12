@@ -1,6 +1,6 @@
 .sass-cache/*
 node_modules/*
-project/styleGuide/*
-project/fonts/icons/*
+styleGuide/*
+project/icon-font/generated
 public/*
 !public/readme.md

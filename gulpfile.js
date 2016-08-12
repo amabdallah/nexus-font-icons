@@ -1,29 +1,28 @@
+var nxName          = 'Nexus Font Icons',
+    nxVersion       = 'v2.1.0',
+    nxGit           = 'https://github.com/Vlasterx/nexus-font-icons';
+
 /***********
  * PLUGINS *
  ***********/
 
-var gulp            = require('gulp'),
-    sass            = require('gulp-sass'),
-    rsass           = require('gulp-ruby-sass'),
-    rename          = require('gulp-rename'),
-    prefix          = require('gulp-autoprefixer'),
+var gulp 		         = require('gulp'),
+    sass 		         = require('gulp-sass'),
+    less            = require('gulp-less'),
+    rename 		       = require('gulp-rename'),
+    prefix 		       = require('gulp-autoprefixer'),
     iconfont        = require('gulp-iconfont'),
     iconfontCss     = require('gulp-iconfont-css'),
-    resolver        = require("gulp-resolver"),
-    rimraf          = require('gulp-rimraf'),
-    shell           = require('gulp-shell'),
-    cssmin          = require('gulp-cssmin'),
-    cleancss        = require('gulp-cleancss'),
-    gcmq            = require('gulp-group-css-media-queries'),
-    uglify          = require('gulp-uglify'),
-    gutil           = require('gulp-util'),
-    jsonSass        = require('gulp-json-sass'),
-    concat          = require('gulp-concat'),
-    insert          = require('gulp-insert'),
-    jshint          = require('gulp-jshint'),
-    browserify      = require('gulp-browserify'),
-    gulpkss         = require('gulp-kss'),
+    resolver 	      = require("gulp-resolver"),
+    shell 		        = require('gulp-shell'),
+    cssmin 		       = require('gulp-cssmin'),
+    cleancss 	      = require('gulp-cleancss'),
+    gcmq 		         = require('gulp-group-css-media-queries'),
+    concat 		       = require('gulp-concat'),
+    insert 		       = require('gulp-insert'),
     clc             = require('cli-color'),
+    del             = require('del'),
+    plumberNotifier = require('gulp-plumber-notifier'),
     runSequence     = require('run-sequence').use(gulp);
 
 
@@ -31,7 +30,10 @@ var gulp            = require('gulp'),
 var error   = clc.red.bold,
     warn    = clc.yellow,
     notice  = clc.blue,
-    notice2 = clc.blue.bold;
+    notice2 = clc.blue.bold,
+    green   = clc.green,
+    cyan    = clc.cyan,
+    yellow  = clc.yellow;
 
 /**********************
  * Icon font settings *
@@ -56,42 +58,13 @@ var fontName = 'icons',
 
 var fileRevving = false;
 
+// Browsers to target when prefixing CSS.
+var COMPATIBILITY = ['last 2 versions', 'ie >= 8', 'opera >= 12.1', 'ios >= 6', 'android >= 4', 'Firefox >= 4'];
 
-/*********
- * PATHS *
- *********/
-var fontName = 'icons',
-    fontVersion = Math.floor(Date.now()); // Timestamp in miliseconds
+// Cleanup this files when compilation ends
+var cleanup = [ "public/**/*", "!public/dud.md" ];
 
-var basePaths = {
-    project : 'project/',
-    public  : 'public/'
-};
-var paths = {
-    fonts: {
-        root    : basePaths.project + 'fonts/',
-        project : basePaths.project + 'fonts/' + fontName + '/',
-        public  : basePaths.public + 'fonts/',
-        icons   : basePaths.project + 'icons/'
-    },
-    styleGuide: {
-        template: basePaths.project + 'styleGuideTemplate/',
-        final   : basePaths.public + 'styleGuide/'
-    }
-};
-var appFiles = {
-    iconCss         : paths.fonts.project + fontName + '/icons-glyphs.css',
-    iconScss        : paths.fonts.project + fontName + '/.scss',
-    iconSvg         : paths.fonts.icons + '*.svg',
-    tplFontFace     : paths.fonts.root + '_iconFontTemplate/icon-template-fontFace.scss',
-    tplFontGlyphs   : paths.fonts.root + '_iconFontTemplate/icon-template-glyphs.scss',
-    fontFiles       : [paths.fonts.root + '**/*.*',
-                       "!" + paths.fonts.root + '_iconFontTemplate',
-                      paths.fonts.root + '.htaccess'],
-    fontGuide       : paths.fonts.icons + 'styleguide.md',
-    cleanIconFont   : [basePaths.project + 'fonts/' + fontName + '/',
-                       basePaths.public + 'fonts/' + fontName + '/']
-}
+
 
 /***********
  * LIBSASS *
@@ -99,86 +72,81 @@ var appFiles = {
 
 // SASS to CSS
 gulp.task('sass', function () {
-    return gulp.src(appFiles.scss)
+    return gulp.src(["project/**/*.scss", "!project/_**/*.scss", "!project/**/icon-font/**"])
+        //.pipe(sourcemaps.init())
+        .pipe(plumberNotifier())
         .pipe(sass({
-        errLogToConsole: true,
-        outputStyle: 'compact'
-    }))
-        .pipe(prefix('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4', 'Firefox >= 4'))
+            errLogToConsole: true,
+            outputStyle: 'compact'
+        }))
+        .pipe(cleancss({
+            keepBreaks: true,            
+            keepSpecialComments: 1,
+            debug: true, 
+            semanticMerging: true }, 
+            function(details) {
+                console.log(details.name + ': ' + details.stats.originalSize);
+                console.log(details.name + ': ' + details.stats.minifiedSize);
+        }))
         .pipe(gcmq())
-        .pipe(gulp.dest(paths.styles.public));
+        .pipe(prefix(COMPATIBILITY))
+        //.pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest("public/"));
 });
 
-// Minimize CSS
-gulp.task('mincss', function() {
-    return gulp.src(appFiles.css)
+// SASS to minified CSS
+gulp.task('minsass', function() {
+    return gulp.src(["project/**/*.scss", "!project/**/_*.scss", "!project/_**/*.scss", "!project/**/icon-font/**"])
+        // .pipe(sourcemaps.init())
+        .pipe(plumberNotifier())
+        .pipe(sass({
+            errLogToConsole: true,
+            outputStyle: 'compact'
+        }))
+        .pipe(prefix(COMPATIBILITY))
+        .pipe(gcmq())
         .pipe(cleancss({
-        keepBreaks: true, 
-        keepSpecialComments: 0
-    }))    
+            keepBreaks: false,            
+            keepSpecialComments: 0
+        }))
         .pipe(cssmin())
-        .pipe(rename(function(path) {
-        path.extname = '.min.css';
-    }))
-        .pipe(gulp.dest(paths.styles.public));
+        .pipe(rename(function(path) { path.extname = '.min.css'; }))
+        // .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest("public/"));
+        
+});
 
+// Minify plain CSS
+gulp.task('mincss', function() {
+    return gulp.src(["project/**/*.css", "!project/_**/*.css", "!project/**/*.min.css"])
+        // .pipe(sourcemaps.init())
+        .pipe(plumberNotifier())
+        .pipe(sass({
+            errLogToConsole: true,
+            outputStyle: 'compact'
+        }))
+        .pipe(prefix(COMPATIBILITY))
+        .pipe(gcmq())
+        .pipe(cleancss({
+            keepBreaks: false,            
+            keepSpecialComments: 0
+        }))
+        .pipe(cssmin())
+        .pipe(rename(function(path) { path.extname = '.min.css'; }))
+        // .pipe(sourcemaps.write('.'))
+        .pipe(gulp.dest("public/"));
+        
 });
 
 // SASS for DEV environment - First build icons, then build SASS
 gulp.task('libStyle', function(){ 
-    return runSequence('cleanIcons', 'iconFontFace', 'iconGlyphs', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'sass', 'mincss');
+    return runSequence('cleanIcons', 'iconFontFace', 'iconGlyphs', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'sass', 'minsass', 'mincss');
 });
 
 // Build SASS only, Icons must be built first
 gulp.task('libStyleLite', function(){ 
-    return runSequence('iconSass', 'sass', 'mincss');
+    return runSequence('iconSass', 'sass', 'minsass', 'mincss');
 });
-
-
-/****************************************************
- * RUBY SASS                                        *
- * ------------------------------------------------ *
- * used to compare output CSS                       *
- * need to have sass ruby gem installed:            *
- * > gem install sass                               *
- ****************************************************/
-
-gulp.task('rsass', function() {
-    return rsass(paths.styles.project) 
-        .on('error', function (err) { 
-        console.log(error('Error!', err.message)); 
-    })
-        .pipe(rename(function(path) {
-        path.extname = '.ruby.css';
-    }))
-        .pipe(prefix('last 2 version', 'safari 5', 'ie 8', 'ie 9', 'opera 12.1', 'ios 6', 'android 4', 'Firefox >= 4'))
-        .pipe(gcmq())
-        .pipe(gulp.dest(paths.styles.public));
-});
-
-
-
-// Minimize ruby CSS
-gulp.task('minrcss', function () {
-    return gulp.src(appFiles.rcss)
-        .pipe(cleancss({
-        keepBreaks: true, 
-        keepSpecialComments: 0
-    }))    
-        .pipe(cssmin())
-        .pipe(rename(function(path) {
-        path.extname = '.min.css';
-    }))
-        .pipe(gulp.dest(paths.styles.public));
-});
-
-// Final ruby build
-gulp.task('rubyStyle', function(){ 
-    return runSequence('rsass', 'minrcss');
-});
-
-
-
 
 /*******************************************************************************************
  * FONT ICONS                                                                              *
@@ -191,111 +159,111 @@ gulp.task('rubyStyle', function(){
  *******************************************************************************************/
 
 
-
 // 1. Delete everything old
-gulp.task('cleanIcons', function() {
-    return gulp.src(appFiles.cleanIconFont, { read: false }) // much faster
-        .pipe(rimraf());
+gulp.task('cleanIcons', function () {
+    return del([
+        'project/icon-font/generated/',
+        'public/icon-font/generated/'
+    ]);
 });
 
 // 2. Make web fonts from SVG and create SCSS files
 gulp.task('iconFontFace', function(){
-    return gulp.src([appFiles.iconSvg])
+    return gulp.src(['project/**/icon-font*/svg/*.svg', '!project/**/_icon-font*/svg/*.svg', '!project/**/icon-font*/svg/_*.svg'])
+        .pipe(plumberNotifier())
         .pipe(iconfontCss({
-        fontName: fontName,
-        appendCodepoints: true,
-        path: appFiles.tplFontFace,
-        targetPath: fontName+'.scss',
-        fontPath: fontName
-    }))
+            fontName: fontName,
+            appendUnicode: true,
+            formats: ['svg', 'ttf', 'eot', 'woff'],
+            path: 'project/icon-font/template/icon-template-fontFace.scss',
+            targetPath: fontName+'.scss',
+            fontPath: fontName
+        }))
         .pipe(iconfont({
-        fontHeight: 512,
-        normalize: true,
-        descent: 64,
-        fontName: fontName
-    }))
-        .pipe(gulp.dest(paths.fonts.project));
+            fontHeight: 512,
+            normalize: true,
+            descent: 64,
+            fontName: fontName
+        }))
+        .pipe(gulp.dest('project/icon-font/generated/'));
 });
 gulp.task('iconGlyphs', function(){
-    return gulp.src([appFiles.iconSvg])
+    return gulp.src(['project/**/icon-font*/svg/*.svg', '!project/**/_icon-font*/svg/*.svg', '!project/**/icon-font*/svg/_*.svg'])
+        .pipe(plumberNotifier())
         .pipe(iconfontCss({
-        fontName: fontName,
-        appendCodepoints: true,
-        path: appFiles.tplFontGlyphs,
-        targetPath: fontName+'-glyphs.scss',
-        fontPath: fontName
-    }))
+            fontName: fontName,
+            appendUnicode: true,
+            formats: ['svg', 'ttf', 'eot', 'woff'],
+            path: 'project/icon-font/template/icon-template-glyphs.scss',
+            targetPath: fontName+'-glyphs.scss',
+            fontPath: fontName
+        }))
         .pipe(iconfont({
-        fontHeight: 512,
-        normalize: true,
-        descent: 64,
-        fontName: fontName
-    }))
-        .pipe(gulp.dest(paths.fonts.project));
+            fontHeight: 512,
+            normalize: true,
+            descent: 64,
+            fontName: fontName
+        }))
+        .pipe(gulp.dest('project/icon-font/generated/'));
 });
 
 // copy font guide to generated font folder
 gulp.task('copyFontGuide', function () {
-    console.log(notice('nx: COPY Font guide from "'+appFiles.fontGuide+'" to "'+ paths.fonts.project+fontName + '"'));
-    return gulp.src(appFiles.fontGuide)
-        .pipe(gulp.dest(paths.fonts.project));
+    console.log(notice('nx: COPYING font guide to generated font folder"'));
+    return gulp.src('project/icon-font/styleguide.md')
+        .pipe(gulp.dest('public/icon-font/generated/'));
 });
 
 
 // 3. Append version for font files
 gulp.task('iconRename', function () {
     if(fileRevving === true) {        
-        return gulp.src([paths.fonts.project+'/*.*'])
+        return gulp.src(['project/icon-font/generated/*.*'])
             .pipe(rename({
-            suffix: "."+fontVersion,
-        }))
-            .pipe(gulp.dest(paths.fonts.project+'/'));
+                suffix: "."+fontVersion,
+            }))
+            .pipe(gulp.dest('project/icon-font/generated/'));
     }
 });
 
 // 3.1. Add revving to scss
 gulp.task('iconRev', function () {
     if(fileRevving === true) { 
-        return gulp.src(paths.fonts.project+'/*.scss')
+        return gulp.src('project/icon-font/generated/*.scss')
             .pipe(resolver.css({
-            assetsDir: paths.fonts.project
-        }))
-            .pipe(gulp.dest(paths.fonts.project))  
+                assetsDir: 'project/icon-font/generated/'
+            }))
+            .pipe(gulp.dest('project/icon-font/generated/'))  
     }
 });
 
 // 3.2. Delete unneeded rev files
 gulp.task('cleanRev', function() {
     if(fileRevving === true) { 
-        return gulp.src([paths.fonts.project+'/*.*.*'], { read: false }) // much faster
-            .pipe(rimraf());
+        return del([
+            'project/icon-font/generated/*.*.*'
+        ]);
     }
 });
 
 // 4. Create CSS from SCSS
 gulp.task('iconSass', function () {
-    return gulp.src(paths.fonts.project+'/*.scss')
+    return gulp.src('project/icon-font/generated/*.scss')
         .pipe(sass())
-        .pipe(gulp.dest(paths.fonts.project));
+        .pipe(gulp.dest('project/icon-font/generated/'));
 });
 
 // 5. Copy finished font to public folder
 gulp.task('copyFont', function () {
-    console.log(notice('nx: COPY fonts from "'+appFiles.fontFiles+'" to "'+ paths.fonts.public + '"'));
-    return gulp.src(appFiles.fontFiles)
-        .pipe(gulp.dest(paths.fonts.public));
+    console.log(notice('nx: COPY fonts from project to public folder'));
+    return gulp.src(['project/icon-font/generated/**/*.*', 'project/icon-font/.htaccess'])
+        .pipe(gulp.dest('public/icon-font/generated/'));
 });
 
-// Delete unneeded files 
-gulp.task('cleanFontFolder', function() {
-    console.log(notice('nx: CLEANING up Font folder'));
-    return gulp.src(paths.fonts.public + '_iconFontTemplate/', { read: false }) // much faster
-        .pipe(rimraf());
-});
 
 // Final build - Icon font
 gulp.task('buildFont', function(){ 
-    runSequence('cleanIcons', 'iconFontFace', 'iconGlyphs', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'copyFont', 'cleanFontFolder');
+    runSequence('cleanIcons', 'iconFontFace', 'iconGlyphs', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'copyFont', 'copyFontGuide');
 });
 
 
@@ -304,67 +272,94 @@ gulp.task('buildFont', function(){
  * STYLE GUIDE *
  ***************/
 
+// Generate kss.css from kss.less file
+gulp.task('guideless', function () {
+  return gulp.src('styleGuideTemplate/public/kss.less')
+    .pipe(plumberNotifier())
+    .pipe(less())
+    .pipe(gulp.dest('styleGuideTemplate/public/'));
+});
+
 // Delete old styleGuide
 gulp.task('cleanGuide', function() {
     console.log(notice('nx: DELETING old styleGuide'));
-    return gulp.src(paths.styleGuide.final, { read: false }) // much faster
-        .pipe(rimraf());
+    return del([
+        'styleGuide/'
+    ]);
 });
 
-// Create new styleGuide
-gulp.task('kss-shell', shell.task([
-    // FAQ - https://github.com/kss-node/kss-node
-    'kss-node css/ styleGuide/ --template styleGuideTemplate/ --m ../public/css/style.css'
-]));
+// Concat all SCSS files for styleguide (it doesn't have to be pretty since you only need comments)
+// Font icon templates are excluded
+gulp.task('concat-scss', function() {
+    return gulp.src(['project/**/*.scss', '!project/**/template/**/*.scss', '!project/_**/*.scss', '!project/**/_*.scss'])
+        .pipe(plumberNotifier())
+        .pipe(concat('all.scss'))
+        .pipe(gulp.dest("styleGuide/"));   
+});
 
-gulp.task('kss-shell', shell.task([
-    // FAQ - https://github.com/kss-node/kss-node
-    'kss-node '+paths.fonts.project+' '+paths.styleGuide.final +' --template '+paths.styleGuide.template+' --m *.css'
-    //    'kss-node css/ styleGuide/ --template styleGuideTemplate/ --m main.css'
-]));
+// Concat all styleguide.md files and copy them to styleguides folder
+gulp.task('concat-md', function() {
+    return gulp.src(['project/**/styleguide.md'])
+        .pipe(plumberNotifier())
+        .pipe(concat('styleguide.md'))
+        .pipe(gulp.dest("styleGuide/"));   
+});
 
-// Copy assets to styleGuide folder
+// Start KSS from shell
+gulp.task('kss-shell', shell.task([
+    'kss-node --source <%= source %> --destination <%= destination %> --template <%= template %>'
+], {
+    templateData: {
+        source: 'styleGuide',
+        destination: 'styleGuide',
+        template: 'styleGuideTemplate'
+    }
+}));
+
+// Copy generated icon fonts to styleGuide folder
 gulp.task('kss-assets', function () {
-    console.log(notice('nx: COPY fonts from "'+appFiles.fontFiles+'" to "'+ paths.styleGuide.final + 'fonts/"'));
-    return gulp.src(appFiles.fontFiles)
-        .pipe(gulp.dest(paths.styleGuide.final + 'fonts/'));
-});
-
-// Delete unneeded files 
-gulp.task('cleanGuide2', function() {
-    console.log(notice('nx: CLEANING up StyleGuide'));
-    return gulp.src(paths.styleGuide.final + 'fonts/_iconFontTemplate/', { read: false }) // much faster
-        .pipe(rimraf());
+    return gulp.src(['project/icon-font/generated/*.*', 'project/icon-font/.htaccess'])
+        .pipe(gulp.dest('styleGuide/fonts/icons/'));
 });
 
 // Final standalone build - styleGuide
 gulp.task('guide', function(){ 
-    runSequence('libStyle', 'javascript', 'cleanGuide', 'kss-shell', 'kss-assets', 'cleanGuide2');
+    runSequence('libStyle', 'javascript', 'guideless', 'cleanGuide', 'concat-md', 'concat-scss', 'kss-shell', 'kss-assets');
 });
 // Final gulp build - styleGuide
 gulp.task('buildGuide', function(){ 
-    runSequence('cleanGuide', 'kss-shell', 'kss-assets', 'cleanGuide2');
+    runSequence('guideless', 'cleanGuide', 'concat-md', 'concat-scss', 'kss-shell', 'kss-assets');
 });
 
 
-
-/**************
- * WATCH TASK *
- **************/
-
-// Compile assets for guide
-gulp.task('watching', function(){ 
-    runSequence('buildFont', 'buildGuide');
+// Cleanup
+gulp.task('cleanUp', function () {
+    return del(cleanup);
 });
 
-gulp.task('watch', ['watching'], function() {
-    // Watch SVG files and create font and guide when they are changed
-    gulp.watch(appFiles.iconSvg, ['buildFont', 'buildGuide'])
-        .on('change', function(event) {
-            console.log('[' + event.type + '] ' + event.path);
-        });
-});
 
+// Final move fonts from generated
+gulp.task('moveFonts1', function () {
+   return gulp.src(['public/icon-font/generated/**/*.*'])
+    .pipe(gulp.dest('public/'+fontName))
+});
+gulp.task('moveFonts2', function () {
+  return del('public/icon-font/')
+});
+gulp.task('done', function() {
+  console.log(cyan('------------------------------------------------------------------------'));
+  console.log(notice2('ICON FONT HAS BEEN GENERATED!\n'));
+  console.log(green('Finished webfont:'));
+  console.log(yellow('"[project root] public/'+fontName+'/"\n'));
+  console.log(green('Styleguide:'));
+  console.log(yellow('"[project root] styleGuide/"'));
+  console.log(cyan('------------------------------------------------------------------------'));
+  console.log(cyan('> Project home:  '+nxGit));
+  console.log(cyan('> Author home:   http://www.webdizajn.org'));
+  console.log(cyan('> Author blog:   https://steemit.com/@webdesign\n'));
+  console.log(notice2(':) Thank you for using '+nxName+' '+nxVersion));
+  console.log(cyan('------------------------------------------------------------------------'));
+})
 
 /********
  * GULP *
@@ -372,8 +367,10 @@ gulp.task('watch', ['watching'], function() {
 
 // Task list 
 gulp.task('final', function(){ 
-    runSequence('cleanIcons', 'iconFontFace', 'iconGlyphs', 'copyFontGuide', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'copyFont', 'cleanFontFolder', 'cleanGuide', 'kss-shell', 'kss-assets', 'cleanGuide2');
+    runSequence('cleanUp', 'cleanIcons', 'iconFontFace', 'iconGlyphs', 'iconRename', 'iconRev', 'cleanRev', 'iconSass', 'sass', 'copyFont', 'guideless', 'cleanGuide', 'concat-md', 'concat-scss', 'kss-shell', 'kss-assets', 'minsass', 'mincss', 'moveFonts1', 'moveFonts2', 'done');
 });
+
 
 // Default task
 gulp.task('default', ['final']);
+

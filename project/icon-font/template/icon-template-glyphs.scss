@@ -1,0 +1,76 @@
+// Include this file in your main SCSS file, so that you can extend icon names
+%icon {
+    font-family: "<%= fontName %>";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    line-height: 1;
+    // speak: none; // only necessary if not using the private unicode range (firstGlyph option)
+    text-decoration: none;
+    text-transform: none;
+}
+
+@function icon-char($filename) {
+    $char: "";
+    <% _.each(glyphs, function(glyph) { %>
+        @if $filename == <%= glyph.fileName %> {
+            $char: "\<%= glyph.codePoint %>";
+        }<% }); %>
+    @return $char;
+}
+
+@mixin icon($filename, $insert: before) {
+    &:#{$insert} {
+        @extend %icon;
+        content: icon-char($filename);
+    }
+}
+
+
+/* 
+Icons
+
+Fonts are made from SVG's who are located in folders whose name start with `icon-font` and it's `svg` subfolder. For example, icon-font will be made from these folders:
+
+- `project/modules__core/icon-font/svg/`
+- `project/modules__addon/icon-font--custom/svg/`
+
+SVG graphics should be made on canvas which has height of `512px` and where gridline is set every 32px, with 4 subdivisions. There is an example Adobe Illustrator file in `./project/modules-core/icon-font/test-pattern-1.ai` and `./project/modules-core/icon-font/test-pattern-2.ai`
+
+When you create icons, in order for them to be pixel perfect in size of `16px`, you must align curves to main gridlines. If you plan to make icons for some other pixel-perfect size, you must recalculate grid and canvas size.
+
+#### Keep this in mind
+All graphics in SVG must follow these rules:
+- only vectors are included, all raster graphics are discarded
+- only flat surfaces are included. All strokes must be converted to fills, use `Object -> Expand` command in Illustrator.
+- only one color is accepted. If you plan to make hollow objects, use `Pathfinder -> Exclude` command in Illustrator.
+
+For more info on how to build pixel perfect icons for any base font size, read [Nexus icons tutorial](http://vx.rs/nexus-icons)
+
+
+### All generated icons
+
+<% _.each(glyphs, function(glyph) { %><a href="#section-Icons.<%= glyph.fileName %>"><span class="icon icon-<%= glyph.fileName %>" alt=".icon-<%= glyph.fileName %>" title=".icon-<%= glyph.fileName %>"></span></a> <% }); %>
+
+Styleguide Icons
+*/
+
+
+<% _.each(glyphs, function(glyph) { %>
+/* 
+<%= glyph.fileName %>
+
+<a href="#all-generated-icons" class="back-to-top">Back to top</a>
+
+Markup:
+<span class="icon icon-<%= glyph.fileName %>"></span>
+
+Styleguide Icons.<%= glyph.fileName %> 
+*/
+
+.icon-<%= glyph.fileName %> {
+    @include icon(<%= glyph.fileName %>); 
+}
+<% }); %>
