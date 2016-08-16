@@ -235,4 +235,4 @@ So what are the benefits?
 
 ## Author
 Vladimir Jovanović
-[web site](http://www.webdizajn.org) | [Twitter](https://twitter.com/vlasterx) | [Facebook](https://www.facebook.com/dizajn.ninja) | [LinkedIn](http://vx.rs/linkedin) | [Steem](https://steemit.com/@webdesign)
+[web site](http://www.webdizajn.org) | [Twitter](https://twitter.com/vlasterx) | [Facebook](https://vx.rs/face) | [LinkedIn](http://vx.rs/linkedin) | [Steem](https://steemit.com/@webdesign)
